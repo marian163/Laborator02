@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.PopupWindow
 import ro.pub.systems.eim.lab02.activitylifecyclemonitor.R
@@ -51,10 +52,85 @@ class LifecycleMonitorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lifecycle_monitor)
+
         val okButton = findViewById(R.id.ok_button) as Button
         okButton.setOnClickListener(buttonClickListener)
         val cancelButton = findViewById(R.id.cancel_button) as Button
         cancelButton.setOnClickListener(buttonClickListener)
-        Log.d(Constants.TAG, "onCreate() method was invoked without a previous state")
+
+        if (savedInstanceState == null) {
+            Log.d(Constants.TAG, "onCreate() method was invoked without a previous state")
+        } else {
+            Log.d(Constants.TAG, "onCreate() method was invoked with a previous state")
+
+            val usernameEditText = findViewById(R.id.username_edit_text) as EditText
+            val passwordEditText = findViewById(R.id.password_edit_text) as EditText
+            val rememberMeCheckBox = findViewById(R.id.remember_me_checkbox) as CheckBox
+
+            if (savedInstanceState.containsKey(Constants.USERNAME_EDIT_TEXT)) {
+                usernameEditText.setText(savedInstanceState.getString(Constants.USERNAME_EDIT_TEXT))
+            }
+            if (savedInstanceState.containsKey(Constants.PASSWORD_EDIT_TEXT)) {
+                passwordEditText.setText(savedInstanceState.getString(Constants.PASSWORD_EDIT_TEXT))
+            }
+            if (savedInstanceState.containsKey(Constants.REMEMBER_ME_CHECKBOX)) {
+                rememberMeCheckBox.isChecked = savedInstanceState.getBoolean(Constants.REMEMBER_ME_CHECKBOX)
+            }
+        }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.d(Constants.TAG, "onRestart() method was invoked")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(Constants.TAG, "onStart() method was invoked")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(Constants.TAG, "onResume() method was invoked")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(Constants.TAG, "onPause() method was invoked")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(Constants.TAG, "onStop() method was invoked")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(Constants.TAG, "onDestroy() method was invoked")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val usernameEditText = findViewById(R.id.username_edit_text) as EditText
+        val passwordEditText = findViewById(R.id.password_edit_text) as EditText
+        val rememberMeCheckBox = findViewById(R.id.remember_me_checkbox) as CheckBox
+
+        if (rememberMeCheckBox.isChecked) {
+            outState.putString(Constants.USERNAME_EDIT_TEXT, usernameEditText.text.toString())
+            outState.putString(Constants.PASSWORD_EDIT_TEXT, passwordEditText.text.toString())
+            outState.putBoolean(Constants.REMEMBER_ME_CHECKBOX, rememberMeCheckBox.isChecked)
+        }
+
+        if (Constants.DEBUG) {
+            Log.d(Constants.TAG, "onSaveInstanceState() method was invoked")
+        }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (Constants.DEBUG) {
+            Log.d(Constants.TAG, "onRestoreInstanceState() method was invoked")
+        }
     }
 }
